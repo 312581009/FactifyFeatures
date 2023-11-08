@@ -28,6 +28,13 @@ stopwords = set(nltk.corpus.stopwords.words("english"))
 def addFeature(instance):
     # EXISTING DATA DOES NOT NEED TO BE RUN AGAIN
     #instance['id'] = id
+    instance['claim_id'] = claim_id
+    instance['claim'] = claim
+    instance['evidence'] = evidence
+    instance['question'] = question
+    instance['claim_answer'] = claim_answer
+    instance['evidence_answer'] = evidence_answer
+    instance['label'] = label
     #instance['characters'] = getFeature(len)
     #instance['words'] = getFeature(lambda x: len(x.split()))
     #instance['capital_characters'] = getFeature(lambda x: len([char for char in x if char.isupper()]))
@@ -35,14 +42,18 @@ def addFeature(instance):
     #instance['punctuations'] = getFeature(lambda x : sum(1 for char in x if char in string.punctuation))
     #instance['quotes'] = getFeature(lambda x : len(re.findall(r'"([^"]*)"', x)))
     #instance['sentences'] = getFeature(lambda x : len(nltk.sent_tokenize(x)))
-    #instance['unique'] = getFeature(lambda x : len(set(x.split())))
+    #instance['uniques'] = getFeature(lambda x : len(set(x.split())))
     #instance['hashtags'] = getFeature(lambda x : len(re.findall(r'#\w+', x)))
     #instance['mentions'] = getFeature(lambda x : len(re.findall(r'@\w+', x)))
     #instance['stopwords'] = getFeature(lambda x : len([word for word in x.split() if word.lower() in stopwords]))
     return
 
     # https://www.analyticsvidhya.com/blog/2021/04/a-guide-to-feature-engineering-in-nlp/
-    # LAST FOUR CAN BE CALCULATED FROM THE FIRST ELEVEN
+    # ADDITIONAL CALCULATIONS
+    # avg_word_len = characters/words
+    # avg_sentence_len = words/sentences
+    # unique_ratio = uniques/words
+    # stopword_ratio = stopwords/words
 
 def removeFeature(instance):
     # ADD STRING NAME OF FEATURE TO REMOVE
