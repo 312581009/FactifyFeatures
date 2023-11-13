@@ -152,5 +152,4 @@ cython_debug/
 #.idea/
 
 #data files
-train.json
-val.json
+process.json
