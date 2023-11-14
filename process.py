@@ -1,11 +1,14 @@
+inFile = 'data.json'
+outFile = 'process.json'
+
 import json
-f = open('data.json')
+f = open(inFile)
 input = json.load(f)
 
 output = []
 import os.path
-if os.path.isfile('process.json'):
-    f2 = open('process.json')
+if os.path.isfile(outFile):
+    f2 = open(outFile)
     output = json.load(f2)
 else:
     output = [{} for _ in range(len(input))]
@@ -38,19 +41,6 @@ def addFeature(instance):
     instance['feature'] = []
     return
 
-    # https://www.analyticsvidhya.com/blog/2021/04/a-guide-to-feature-engineering-in-nlp/
-    # ADDITIONAL CALCULATIONS
-    # avg_word_len = characters/words
-    # avg_sentence_len = words/sentences
-    # unique_ratio = uniques/words
-    # stopword_ratio = stopwords/words
-
-def removeFeature(instance):
-    # ADD STRING NAME OF FEATURE TO REMOVE
-    remove = []
-    for feature in remove:
-        instance.pop(feature, None)
-
 for i, data in enumerate(input):
     batch_size = 100
     if i % batch_size == 0:
@@ -64,12 +54,12 @@ for i, data in enumerate(input):
     claim_answer = data['claim_answer']
     evidence_answer = data['evidence_answer']
     label = data['label']
-
-    removeFeature(output[i])
     addFeature(output[i])
 
 from itertools import product
-features = ['characters', 'words', 'capital_characters', 'capital_words', 'punctuations', 'quotes', 'sentences', 'uniques', 'hashtags', 'mentions', 'stopwords']
+keys = data.keys()
+features = [item for item in keys if item not in ['id', 'claim_id', 'claim', 'evidence', 'question', 'claim_answer', 'evidence_answer', 'label']]
+#['characters', 'words', 'capital_characters', 'capital_words', 'punctuations', 'quotes', 'sentences', 'uniques', 'hashtags', 'mentions', 'stopwords']
 
 #single features
 for i in range(5):
@@ -81,22 +71,22 @@ for i in range(5):
             output[index]['feature'].append((norm[index] * 2) - 1.0)
 
 #combination features
-for porder in list(product([0, 1, 2, 3, 4], repeat=2)):
-    for p in list(product(features, repeat=2)):
-        temp2 = [d[p[0]][porder[0]] for d in input]
-        temp3 = [d[p[1]][porder[1]] for d in input]
-        if temp2 == temp3:
+for i in list(product([0, 1, 2, 3, 4], repeat=2)):
+    for f in list(product(features, repeat=2)):
+        f1 = [d[f[0]][i[0]] for d in input]
+        f2 = [d[f[1]][i[1]] for d in input]
+        if f1 == f2:
             continue
-        temp = []
-        for id in range(len(temp2)):
-            if temp3[id] != 0:
-                temp.append(temp2[id] / temp3[id])
+        result = []
+        for id in range(len(f1)):
+            if f2[id] != 0:
+                result.append(f1[id] / f2[id])
             else:
-                temp.append(0)
-        num = max(temp)
-        norm = [float(id)/num if num != 0 else 0 for id in temp]
+                result.append(0)
+        num = max(result)
+        norm = [float(id)/num if num != 0 else 0 for id in result]
         for index in range(len(input)):
             output[index]['feature'].append((norm[index] * 2) - 1.0)
 
-with open('process.json', 'w') as f:
+with open(outFile, 'w') as f:
     json.dump(output, f)

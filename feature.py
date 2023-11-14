@@ -1,11 +1,14 @@
+inFile = 'test.json'
+outFile = 'test_data.json'
+
 import json
-f = open('train.json')
+f = open(inFile)
 input = json.load(f)
 
 output = []
 import os.path
-if os.path.isfile('data.json'):
-    f2 = open('data.json')
+if os.path.isfile(outFile):
+    f2 = open(outFile)
     output = json.load(f2)
 else:
     output = [{} for _ in range(len(input))]
@@ -78,5 +81,5 @@ for i, data in enumerate(input):
     removeFeature(output[i])
     addFeature(output[i])
 
-with open('data.json', 'w') as f:
+with open(outFile, 'w') as f:
     json.dump(output, f)
